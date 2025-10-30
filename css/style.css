@@ -1,0 +1,211 @@
+/* === GLOBAL STYLES === */
+body {
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  margin: 0;
+  background-color: #f4f6f8;
+  color: #222;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: #1e2a38;
+  margin: 0.5em 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* === NAVIGATION BAR === */
+nav {
+  background-color: #1e2a38;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 50px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+nav .logo {
+  font-size: 1.3em;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  margin-left: 30px;
+}
+
+nav ul li a {
+  color: white;
+  font-weight: 500;
+  transition: color 0.25s, border-bottom 0.25s;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+  color: #4fc3f7;
+  border-bottom: 2px solid #4fc3f7;
+}
+
+/* === CHART LAYOUT === */
+#charts {
+  display: flex;
+  flex-direction: column; /* stack charts vertically */
+  align-items: center;
+  gap: 60px; /* spacing between chart sections */
+  margin: 50px auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+/* === INDIVIDUAL CHART CONTAINER === */
+.line-chart-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  width: 100%; /* make it full width */
+  max-width: 1000px; /* limit to nice readable width */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.line-chart-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+
+/* === CHART CONTAINER === */
+.line-chart-container {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  margin: 20px 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.line-chart-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* === CHART ELEMENTS === */
+.line {
+  fill: none;
+  stroke: #0077b6;
+  stroke-width: 2.5;
+}
+
+.dot {
+  fill: #0077b6;
+  stroke: white;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: fill 0.2s;
+}
+
+.dot:hover {
+  fill: #ff6b6b;
+}
+
+.axis-label {
+  font-size: 13px;
+  font-weight: 600;
+  fill: #333;
+}
+
+.axis path,
+.axis line {
+  stroke: #ccc;
+}
+
+.axis text {
+  font-size: 12px;
+  fill: #555;
+}
+
+.grid line {
+  stroke: #e6e6e6;
+  stroke-opacity: 0.7;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.chart-title {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #1e2a38;
+}
+
+/* === TOOLTIP === */
+.tooltip {
+  position: absolute;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  pointer-events: none;
+  font-size: 13px;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* === CHART AREA === */
+#chart, .chart {
+  width: 100%;
+  height: 480px;
+}
+
+/* === CONTROLS / FILTERS === */
+.controls {
+  text-align: center;
+  margin: 40px 0 20px 0;
+}
+
+.controls select, 
+.controls button {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95em;
+  background-color: white;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+
+.controls select:hover,
+.controls button:hover {
+  background-color: #e8f4fd;
+  border-color: #4fc3f7;
+}
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #555;
+  font-size: 0.9em;
+  border-top: 1px solid #ddd;
+  background: #f1f1f1;
+  margin-top: 60px;
+}

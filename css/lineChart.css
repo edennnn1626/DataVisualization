@@ -1,0 +1,66 @@
+/* Chart styles */
+.line-chart-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+.line {
+    fill: none;
+    stroke: #2c3e50;
+    stroke-width: 2;
+}
+
+.dot {
+    fill: #2c3e50;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.dot:hover {
+    fill: #e74c3c;
+}
+
+.axis-label {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.axis path,
+.axis line {
+    stroke: #ccc;
+}
+
+.axis text {
+    font-size: 12px;
+    color: #666;
+}
+
+.grid line {
+    stroke: #eee;
+    stroke-opacity: 0.7;
+}
+
+.grid path {
+    stroke-width: 0;
+}

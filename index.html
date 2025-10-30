@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speed Fines Dashboard | Home</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/lineChart.css" />
+</head>
+
+<body>
+  <nav>
+    <div class="logo">🚓 Speed Fines Dashboard</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <section style="text-align:center; padding:60px 20px;">
+    <h1>Australian Speed Fines Analysis</h1>
+    <p style="max-width:700px; margin:20px auto; line-height:1.6;">
+      Speeding remains one of the major causes of road accidents in Australia.
+      This dashboard visualizes data from the Bureau of Infrastructure and Transport Research Economics (BITRE)
+      to explore how speeding fines are distributed by jurisdiction, location, age group, and detection method.
+    </p>
+    <a href="dashboard.html"
+      style="display:inline-block; padding:12px 20px; background:#1e2a38; color:white; border-radius:6px; text-decoration:none; margin-top:15px;">
+      Explore Dashboard →
+    </a>
+  </section>
+
+  <section style="background:white; padding:40px 20px;">
+    <h2>Quick Facts (2024)</h2>
+    <div id="charts">
+      <div style="background:#f5f8fa; padding:20px; border-radius:10px; width:220px; text-align:center;">
+        <h3>Total Fines</h3>
+        <p><strong>5,417</strong></p>
+      </div>
+      <div style="background:#f5f8fa; padding:20px; border-radius:10px; width:220px; text-align:center;">
+        <h3>Top Jurisdiction</h3>
+        <p><strong>NSW</strong></p>
+      </div>
+      <div style="background:#f5f8fa; padding:20px; border-radius:10px; width:220px; text-align:center;">
+        <h3>Common Detection</h3>
+        <p><strong>Police Issued</strong></p>
+      </div>
+      <div style="background:#f5f8fa; padding:20px; border-radius:10px; width:220px; text-align:center;">
+        <h3>Top Age Group</h3>
+        <p><strong>40-64</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="https://d3js.org/d3.v7.min.js" defer></script>
+  <script src="js/dataUtils.js" defer></script>
+  <script src="js/lineChart.js" defer></script>
+
+  <footer>
+    Data Source: BITRE | Built with D3.js | © 2025
+  </footer>
+</body>
+
+</html>
