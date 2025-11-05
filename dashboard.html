@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speed Fines Dashboard | Charts</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <!-- ✅ NAVBAR -->
+    <nav>
+        <div class="logo">🚓 Speed Fines Dashboard</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- ✅ CONTROLS SECTION -->
+    <section class="controls">
+        <h1>Interactive Dashboard</h1>
+        <p>Use the controls below to explore the dataset across jurisdictions, locations, and age groups.</p>
+        <select id="jurisdictionSelect">
+            <option value="All">All Jurisdictions</option>
+            <option value="NSW">NSW</option>
+            <option value="VIC">VIC</option>
+            <option value="QLD">QLD</option>
+        </select>
+    </section>
+
+    <!-- ✅ CHARTS SECTION -->
+    <div id="charts">
+        <!-- Line Chart -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Speed Fines Over Time (2023–2024)</h2>
+            <div id="lineChart" class="chart"></div>
+        </div>
+
+        <!-- Bar Chart: Age Group -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Fines by Age Group</h2>
+            <div id="barChart" class="chart"></div>
+        </div>
+
+        <!-- Horizontal Bar Chart: Detection Method vs Total Fines -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Detection Method Distribution</h2>
+            <div id="methodCountChart" class="chart"></div>
+        </div>
+
+        <!-- Donut Chart: Detection Method Distribution -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Detection Method vs Total Fines</h2>
+            <div id="methodVSFinesChart" class="chart"></div>
+        </div>
+    </div>
+
+    <!-- ✅ SCRIPTS -->
+    <script src="js/dataUtils.js" defer></script>
+    <script src="js/lineChart.js" defer></script>
+    <script src="js/barChart.js" defer></script>
+    <script src="js/methodVSfines.js" defer></script>
+    <script src="js/methodCount.js" defer></script>
+
+    <script defer>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof createLineChart === "function") createLineChart();
+
+            if (typeof createBarChart === "function") {
+                createBarChart("#barChart");
+            }
+
+            // Horizontal bar chart
+            if (typeof createMethodCountChart === "function") {
+                createMethodCountChart("#methodCountChart");
+            }
+
+            // Another chart (e.g., pie, donut)
+            if (typeof createMethodVSFinesChart === "function") {
+                createMethodVSFinesChart("#methodVSFinesChart");
+            }
+        });
+    </script>
+
+</body>
+
+<!-- ✅ FOOTER -->
+<footer>
+    Data Source: BITRE | Dashboard built with D3.js | © 2025
+</footer>
+
+</html>
