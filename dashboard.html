@@ -20,68 +20,50 @@
         </ul>
     </nav>
 
-    <!-- ✅ CONTROLS SECTION -->
-    <section class="controls">
-        <h1>Interactive Dashboard</h1>
-        <p>Use the controls below to explore the dataset across jurisdictions, locations, and age groups.</p>
-        <select id="jurisdictionSelect">
-            <option value="All">All Jurisdictions</option>
-            <option value="NSW">NSW</option>
-            <option value="VIC">VIC</option>
-            <option value="QLD">QLD</option>
-        </select>
-    </section>
-
     <!-- ✅ CHARTS SECTION -->
     <div id="charts">
-        <!-- Line Chart -->
+
+        <!-- Line Chart 1: Annual Speeding Fines -->
         <div class="line-chart-container">
-            <h2 class="chart-title">Speed Fines Over Time (2023–2024)</h2>
-            <div id="lineChart" class="chart"></div>
+            <h2 class="chart-title">Annual Fines From Speeding (2008-2024)</h2>
+            <div id="lineChartSpeeding" class="chart"></div>
         </div>
 
-        <!-- Bar Chart: Age Group -->
+        <!-- Line Chart 2: Fines by Jurisdiction -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Annual Fines by Jurisdiction (2024)</h2>
+            <div id="lineChartJurisdiction" class="chart"></div>
+        </div>
+
+        <!-- Bar Chart: Age Group Fines -->
         <div class="line-chart-container">
             <h2 class="chart-title">Fines by Age Group</h2>
-            <div id="barChart" class="chart"></div>
+            <div id="barChartAgeGroup" class="chart"></div>
         </div>
 
-        <!-- Horizontal Bar Chart: Detection Method vs Total Fines -->
-        <div class="line-chart-container">
-            <h2 class="chart-title">Detection Method Distribution</h2>
-            <div id="methodCountChart" class="chart"></div>
-        </div>
-
-        <!-- Donut Chart: Detection Method Distribution -->
-        <div class="line-chart-container">
-            <h2 class="chart-title">Detection Method vs Total Fines</h2>
-            <div id="methodVSFinesChart" class="chart"></div>
-        </div>
     </div>
 
     <!-- ✅ SCRIPTS -->
     <script src="js/dataUtils.js" defer></script>
-    <script src="js/lineChart.js" defer></script>
+    <script src="js/lineChartSpeeding.js" defer></script>
+    <script src="js/lineChartJurisdiction.js" defer></script>
     <script src="js/barChart.js" defer></script>
-    <script src="js/methodVSfines.js" defer></script>
-    <script src="js/methodCount.js" defer></script>
 
     <script defer>
         document.addEventListener("DOMContentLoaded", function () {
-            if (typeof createLineChart === "function") createLineChart();
+            // Line chart: speeding fines over years
+            if (typeof createLineChart === "function") {
+                createLineChart("#lineChartSpeeding");
+            }
 
+            // Line chart: fines by jurisdiction
+            if (typeof createLineChartJurisdiction === "function") {
+                createLineChartJurisdiction("#lineChartJurisdiction");
+            }
+
+            // Bar chart: age group fines
             if (typeof createBarChart === "function") {
-                createBarChart("#barChart");
-            }
-
-            // Horizontal bar chart
-            if (typeof createMethodCountChart === "function") {
-                createMethodCountChart("#methodCountChart");
-            }
-
-            // Another chart (e.g., pie, donut)
-            if (typeof createMethodVSFinesChart === "function") {
-                createMethodVSFinesChart("#methodVSFinesChart");
+                createBarChart("#barChartAgeGroup");
             }
         });
     </script>

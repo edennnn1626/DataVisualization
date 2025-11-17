@@ -3,30 +3,11 @@ async function createBarChart(containerSelector = '#barChart') {
     if (container.empty()) return;
     container.selectAll('*').remove();
 
-    const data = await loadData();
-    // filter to 2023-2024
-    const startDate = new Date('2023-01-01');
-    const endDate = new Date('2024-12-31');
-    const filtered = data.filter(d => d.START_DATE >= startDate && d.START_DATE <= endDate);
-
-    // Age groups of interest (normalize to CSV values)
-    const ageOrder = ['0-16', '17-25', '26-39', '40-64', '65 and over'];
-
-    const grouped = {};
-    ageOrder.forEach(a => grouped[a] = 0);
-
-    filtered.forEach(d => {
-        const age = d.AGE_GROUP || 'Unknown';
-        if (ageOrder.includes(age)) {
-            grouped[age] += 1;
-        } else {
-            if (age.includes('65')) grouped['65 and over'] += 1;
-            else if (age.includes('26') || age.includes('36') || age.includes('39')) grouped['26-39'] += 1;
-            else if (age.includes('40') || age.includes('64')) grouped['40-64'] += 1;
-        }
-    });
-
-    const chartData = ageOrder.map(age => ({ age, value: grouped[age] }));
+    // Load CSV data
+    const csvData = await d3.csv('AgeGroupFinesContributes.csv', d => ({
+        age: d['AGE_GROUP'],       // must match CSV header exactly
+        value: +d['Sum(FINES)']    // convert string to number
+    }));
 
     const margin = { top: 30, right: 20, bottom: 60, left: 100 };
     const width = Math.min(800, container.node().getBoundingClientRect().width || 800) - margin.left - margin.right;
@@ -39,15 +20,16 @@ async function createBarChart(containerSelector = '#barChart') {
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const x = d3.scaleBand()
-        .domain(chartData.map(d => d.age))
+        .domain(csvData.map(d => d.age))
         .range([0, width])
         .padding(0.2);
 
     const y = d3.scaleLinear()
-        .domain([0, d3.max(chartData, d => d.value) || 0])
+        .domain([0, d3.max(csvData, d => d.value)])
         .nice()
         .range([height, 0]);
 
+    // X and Y axes
     svg.append('g')
         .attr('transform', `translate(0,${height})`)
         .call(d3.axisBottom(x))
@@ -58,13 +40,14 @@ async function createBarChart(containerSelector = '#barChart') {
     svg.append('g')
         .call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(',')));
 
-    // Bars
+    // Tooltip
     const tooltip = d3.select('body').append('div')
         .attr('class', 'tooltip')
         .style('opacity', 0);
 
+    // Bars
     svg.selectAll('.bar')
-        .data(chartData)
+        .data(csvData)
         .enter()
         .append('rect')
         .attr('class', 'bar')
@@ -87,12 +70,12 @@ async function createBarChart(containerSelector = '#barChart') {
 
     // Value labels
     svg.selectAll('.label')
-        .data(chartData)
+        .data(csvData)
         .enter()
         .append('text')
         .attr('class', 'label')
         .attr('x', d => x(d.age) + x.bandwidth() / 2)
         .attr('y', d => y(d.value) - 6)
         .attr('text-anchor', 'middle')
-        .text(d => d.value ? d3.format(',')(d.value) : '');
+        .text(d => d3.format(',')(d.value));
 }
