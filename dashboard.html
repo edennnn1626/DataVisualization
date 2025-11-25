@@ -41,16 +41,32 @@
             <div id="barChartAgeGroup" class="chart"></div>
         </div>
 
+        <!-- Pie Chart: Detection Method -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Fines by Detection Method</h2>
+            <div id="pieChartDetection" class="chart"></div>
+        </div>
+
+        <!-- Line Chart 3: Monthly Fines -->
+        <div class="line-chart-container">
+            <h2 class="chart-title">Monthly Speeding Fines (2024)</h2>
+            <div id="lineChartMonthly" class="chart"></div>
+        </div>
+
     </div>
+
 
     <!-- ✅ SCRIPTS -->
     <script src="js/dataUtils.js" defer></script>
     <script src="js/lineChartSpeeding.js" defer></script>
     <script src="js/lineChartJurisdiction.js" defer></script>
     <script src="js/barChart.js" defer></script>
+    <script src="js/pieChartDetection.js" defer></script>
+    <script src="js/lineChartMonthly.js" defer></script>
 
     <script defer>
         document.addEventListener("DOMContentLoaded", function () {
+
             // Line chart: speeding fines over years
             if (typeof createLineChart === "function") {
                 createLineChart("#lineChartSpeeding");
@@ -64,6 +80,16 @@
             // Bar chart: age group fines
             if (typeof createBarChart === "function") {
                 createBarChart("#barChartAgeGroup");
+            }
+
+            // Pie chart: detection method
+            if (typeof createPieChartDetection === "function") {
+                createPieChartDetection("#pieChartDetection");
+            }
+
+            // Line chart: monthly fines
+            if (typeof createLineChartMonthly === "function") {
+                createLineChartMonthly("#lineChartMonthly");
             }
         });
     </script>
