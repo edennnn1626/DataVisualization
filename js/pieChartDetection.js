@@ -7,14 +7,14 @@ async function createPieChartDetection(containerId = "#pieChartDetection") {
             d.SumFines = +d["Sum(FINES)"];
         });
 
-        const width = 450;
+        const width = 500;   // bigger chart
         const height = 450;
         const radius = Math.min(width, height) / 2;
 
         const svg = d3
             .select(containerId)
             .append("svg")
-            .attr("width", width)
+            .attr("width", width + 150)   // extra space for legend
             .attr("height", height)
             .append("g")
             .attr("transform", `translate(${width / 2}, ${height / 2})`);
@@ -26,7 +26,7 @@ async function createPieChartDetection(containerId = "#pieChartDetection") {
 
         const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
-        // Tooltip div
+        // Tooltip
         const tooltip = d3.select("body")
             .append("div")
             .style("position", "absolute")
@@ -62,15 +62,33 @@ async function createPieChartDetection(containerId = "#pieChartDetection") {
                 tooltip.style("opacity", 0);
             });
 
-        // Labels
-        svg.selectAll("text")
-            .data(data_ready)
+        // ❌ REMOVE all labels inside slices
+        // (just don't add any text)
+
+        // ✅ ADD LEGEND on the right
+        const legend = d3.select(containerId)
+            .select("svg")
+            .append("g")
+            .attr("transform", `translate(${width + 10}, 20)`);
+
+        legend.selectAll("legend-item")
+            .data(data)
             .enter()
-            .append("text")
-            .text(d => d.data.DETECTION_METHOD)
-            .attr("transform", d => `translate(${arc.centroid(d)})`)
-            .style("text-anchor", "middle")
-            .style("font-size", "11px");
+            .append("g")
+            .attr("transform", (d, i) => `translate(0, ${i * 22})`)
+            .each(function (d) {
+                const g = d3.select(this);
+                g.append("rect")
+                    .attr("width", 14)
+                    .attr("height", 14)
+                    .attr("fill", color(d.DETECTION_METHOD));
+
+                g.append("text")
+                    .attr("x", 20)
+                    .attr("y", 12)
+                    .style("font-size", "13px")
+                    .text(d.DETECTION_METHOD);
+            });
 
     } catch (error) {
         console.error("Pie chart error:", error);
