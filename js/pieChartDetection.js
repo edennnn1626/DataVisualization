@@ -7,14 +7,14 @@ async function createPieChartDetection(containerId = "#pieChartDetection") {
             d.SumFines = +d["Sum(FINES)"];
         });
 
-        const width = 500;   // bigger chart
+        const width = 500;
         const height = 450;
         const radius = Math.min(width, height) / 2;
 
         const svg = d3
             .select(containerId)
             .append("svg")
-            .attr("width", width + 150)   // extra space for legend
+            .attr("width", width + 150)
             .attr("height", height)
             .append("g")
             .attr("transform", `translate(${width / 2}, ${height / 2})`);
@@ -61,9 +61,6 @@ async function createPieChartDetection(containerId = "#pieChartDetection") {
             .on("mouseout", function () {
                 tooltip.style("opacity", 0);
             });
-
-        // ❌ REMOVE all labels inside slices
-        // (just don't add any text)
 
         // ✅ ADD LEGEND on the right
         const legend = d3.select(containerId)

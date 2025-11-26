@@ -6,7 +6,7 @@ async function createLineChart(containerSelector = null) {
         method: d.DETECTION_METHOD,
         year: +d.YEAR,
         value: +d["Sum(FINES)"],
-        date: new Date(+d.YEAR, 0, 1) // convert year to Date for X scale
+        date: new Date(+d.YEAR, 0, 1)
     }));
 
     // Group data by detection method
