@@ -1,19 +1,32 @@
 async function createLineChartMonthly(containerId = "#lineChartMonthly") {
     try {
-        const rawData = await d3.csv("MonthlyFines.csv");
+        const rawData = await d3.csv("MonthlyFines.csv", d => ({
+            START_DATE: d.START_DATE,
+            JURISDICTION: d.JURISDICTION,
+            FINES: +d.FINES,
+            YEAR: +d.YEAR,
+            Month: +d.Month
+        }));
 
-        // Aggregate total fines per month
-        const monthMap = d3.rollup(
-            rawData,
-            v => d3.sum(v, d => +d.FINES),
-            d => +d.Month
-        );
+        const years = Array.from(new Set(rawData.map(d => d.YEAR))).sort((a, b) => a - b);
 
-        const data = Array.from(monthMap, ([Month, SumFines]) => ({
-            Month,
-            SumFines
-        })).sort((a, b) => a.Month - b.Month);
+        const dropdown = d3.select("#yearDropdown");
+        dropdown.selectAll("option")
+            .data(years)
+            .enter()
+            .append("option")
+            .attr("value", d => d)
+            .text(d => d);
 
+        let selectedYear = years[0];
+        dropdown.property("value", selectedYear);
+
+        dropdown.on("change", function () {
+            selectedYear = +this.value;
+            updateChart(selectedYear);
+        });
+
+        // ------- Build SVG ONCE -------
         const margin = { top: 30, right: 40, bottom: 40, left: 70 };
         const width = 600 - margin.left - margin.right;
         const height = 350 - margin.top - margin.bottom;
@@ -26,82 +39,74 @@ async function createLineChartMonthly(containerId = "#lineChartMonthly") {
             .append("g")
             .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-        // X scale (months)
+        // Scales
         const x = d3.scaleLinear().domain([1, 12]).range([0, width]);
-        svg.append("g")
+        const xAxis = svg.append("g")
             .attr("transform", `translate(0, ${height})`)
             .call(d3.axisBottom(x).ticks(12).tickFormat(d3.format("d")));
 
-        // Y scale (linear, dynamic)
-        const yMax = d3.max(data, d => d.SumFines);
-        const y = d3.scaleLinear()
-            .domain([0, yMax * 1.1]) // add 10% headroom
-            .range([height, 0])
-            .nice();
+        const y = d3.scaleLinear().range([height, 0]);
+        const yAxis = svg.append("g");
 
-        svg.append("g").call(d3.axisLeft(y));
-
-        // Line generator
-        const line = d3.line()
+        const lineGenerator = d3.line()
             .x(d => x(d.Month))
             .y(d => y(d.SumFines));
 
-        // Draw line
-        svg.append("path")
-            .datum(data)
+        const linePath = svg.append("path")
             .attr("fill", "none")
             .attr("stroke", "steelblue")
-            .attr("stroke-width", 2)
-            .attr("d", line);
+            .attr("stroke-width", 2);
 
-        // Tooltip
-        const tooltip = d3.select("body")
-            .append("div")
-            .style("position", "absolute")
-            .style("padding", "6px 10px")
-            .style("background", "white")
-            .style("border", "1px solid #ccc")
-            .style("border-radius", "4px")
-            .style("opacity", 0)
-            .style("pointer-events", "none");
+        const dotsGroup = svg.append("g");
 
-        // Add dots
-        svg.selectAll("circle")
-            .data(data)
-            .enter()
-            .append("circle")
-            .attr("cx", d => x(d.Month))
-            .attr("cy", d => y(d.SumFines))
-            .attr("r", 4)
-            .attr("fill", "steelblue")
-            .on("mouseover", function (event, d) {
-                tooltip
-                    .style("opacity", 1)
-                    .html(`<strong>Month: ${d.Month}</strong><br>Total Fines: ${d.SumFines}`);
-            })
-            .on("mousemove", function (event) {
-                tooltip
-                    .style("left", event.pageX + 15 + "px")
-                    .style("top", event.pageY - 30 + "px");
-            })
-            .on("mouseout", function () {
-                tooltip.style("opacity", 0);
-            });
-        // X-axis label
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("x", width / 2)
-            .attr("y", height + 40)
-            .text("Month")
-            .style("font-size", "14px")
-            .style("font-weight", "bold");
-        // Y-axis label
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-50}, ${height / 2}) rotate(-90)`)
-            .text("Total Fines")
-            .style("font-size", "14px")
-            .style("font-weight", "bold");
+        // Initial draw
+        updateChart(selectedYear);
+
+        function updateChart(year) {
+            const filtered = rawData.filter(d => d.YEAR === year);
+
+            const monthMap = d3.rollup(
+                filtered,
+                v => d3.sum(v, d => d.FINES),
+                d => d.Month
+            );
+
+            const data = Array.from(monthMap, ([Month, SumFines]) => ({
+                Month,
+                SumFines
+            })).sort((a, b) => a.Month - b.Month);
+
+            // Update Y scale
+            const yMax = d3.max(data, d => d.SumFines) || 0;
+            y.domain([0, yMax * 1.1]).nice();
+
+            // Smooth axis transition
+            yAxis.transition().duration(750).call(d3.axisLeft(y));
+
+            // Update line smoothly
+            linePath
+                .datum(data)
+                .transition()
+                .duration(750)
+                .attr("d", lineGenerator);
+
+            // Update dots smoothly
+            const dots = dotsGroup.selectAll("circle")
+                .data(data, d => d.Month);
+
+            dots.enter()
+                .append("circle")
+                .attr("r", 4)
+                .attr("fill", "steelblue")
+                .merge(dots)
+                .transition()
+                .duration(750)
+                .attr("cx", d => x(d.Month))
+                .attr("cy", d => y(d.SumFines));
+
+            dots.exit().remove();
+        }
+
     } catch (error) {
         console.error("Monthly line chart error:", error);
     }
