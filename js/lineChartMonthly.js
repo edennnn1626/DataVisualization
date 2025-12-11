@@ -8,7 +8,11 @@ async function createLineChartMonthly(containerId = "#lineChartMonthly") {
             Month: +d.Month
         }));
 
-        const years = Array.from(new Set(rawData.map(d => d.YEAR))).sort((a, b) => a - b);
+        // 🔥 Filter to only include 2023 & 2024
+        const filteredData = rawData.filter(d => d.YEAR === 2023 || d.YEAR === 2024);
+
+        // 🔥 Dropdown years = only 2023 & 2024
+        const years = Array.from(new Set(filteredData.map(d => d.YEAR))).sort((a, b) => a - b);
 
         const dropdown = d3.select("#yearDropdown");
         dropdown.selectAll("option")
@@ -18,6 +22,7 @@ async function createLineChartMonthly(containerId = "#lineChartMonthly") {
             .attr("value", d => d)
             .text(d => d);
 
+        // Default select first year (2023)
         let selectedYear = years[0];
         dropdown.property("value", selectedYear);
 
@@ -39,12 +44,13 @@ async function createLineChartMonthly(containerId = "#lineChartMonthly") {
             .append("g")
             .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-        // Scales
+        // X scale (1–12)
         const x = d3.scaleLinear().domain([1, 12]).range([0, width]);
         const xAxis = svg.append("g")
             .attr("transform", `translate(0, ${height})`)
             .call(d3.axisBottom(x).ticks(12).tickFormat(d3.format("d")));
 
+        // Y scale
         const y = d3.scaleLinear().range([height, 0]);
         const yAxis = svg.append("g");
 
@@ -63,10 +69,10 @@ async function createLineChartMonthly(containerId = "#lineChartMonthly") {
         updateChart(selectedYear);
 
         function updateChart(year) {
-            const filtered = rawData.filter(d => d.YEAR === year);
+            const yearlyData = filteredData.filter(d => d.YEAR === year);
 
             const monthMap = d3.rollup(
-                filtered,
+                yearlyData,
                 v => d3.sum(v, d => d.FINES),
                 d => d.Month
             );
@@ -76,21 +82,17 @@ async function createLineChartMonthly(containerId = "#lineChartMonthly") {
                 SumFines
             })).sort((a, b) => a.Month - b.Month);
 
-            // Update Y scale
             const yMax = d3.max(data, d => d.SumFines) || 0;
             y.domain([0, yMax * 1.1]).nice();
 
-            // Smooth axis transition
             yAxis.transition().duration(750).call(d3.axisLeft(y));
 
-            // Update line smoothly
             linePath
                 .datum(data)
                 .transition()
                 .duration(750)
                 .attr("d", lineGenerator);
 
-            // Update dots smoothly
             const dots = dotsGroup.selectAll("circle")
                 .data(data, d => d.Month);
 
